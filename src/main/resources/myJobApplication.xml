@@ -62,4 +62,25 @@
         </batch:step>
     </batch:job>
 
+    <!--Quartz定时调度配置-->
+    <bean id="jobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass" value=" org.springframework.scheduling.quartz.QuartzJobBean" />
+        <property name="group" value="quartz-batch" />
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="jobName" value-ref="jobExample" />
+                <entry key="jobRepository" value-ref="jobRepository" />
+            </map>
+        </property>
+    </bean>
+    <!--触发器-->
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+                <property name="jobDetail" ref="jobDetail" />
+                <property name="cronExpression" value="0/3 * * * * ?" />
+            </bean>
+        </property>
+    </bean>
+
 </beans>
