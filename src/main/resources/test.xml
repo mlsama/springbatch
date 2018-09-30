@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+            xmlns="http://www.springframework.org/schema/beans"
+            xmlns:batch="http://www.springframework.org/schema/batch"
+            xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+            http://www.springframework.org/schema/batch
+            http://www.springframework.org/schema/batch/spring-batch.xsd
+            http://www.springframework.org/schema/jdbc
+            http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+
+
+        <batch:job id="billingJob" restartable="true">
+            <batch:step id="billingStep">
+                <tasklet task-executor="taskExecutor" throttle-limit="50"  start-limit="3">
+                    <chunk reader="userDbReader" processor="billingProcessor"
+                           writer="billDbWriter" commit-interval="200" chunk-completion-policy="">
+                    </chunk>
+                </tasklet>
+            </batch:step>
+        </batch:job>
+
+        <!-- run every 10 seconds -->
+        <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+            <property name="triggers">
+                <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+                    <property name="jobDetail" ref="jobDetail" />
+                    <property name="cronExpression" value="0 0/2 * * * ?" />
+                </bean>
+            </property>
+        </bean>
+
+
+        <bean id="jobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+            <property name="jobClass" value=" org.springframework.scheduling.quartz.QuartzJobBean" />
+            <property name="group" value="quartz-batch" />
+            <property name="jobDataAsMap">
+                <map>
+                    <entry key="jobName" value-ref="billingJob" />
+                    <entry key="jobRepository" value-ref="jobRepository" />
+                </map>
+            </property>
+        </bean>
+
+
+
+        <bean id="taskExecutor"
+              class="org.springframework.core.task.SimpleAsyncTaskExecutor">
+        </bean>
+
+        <bean id="placeholderProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+            <property name="locations">
+                <list>
+                    <value>classpath:batch-${ENVIRONMENT:hsql}.properties</value>
+                </list>
+            </property>
+            <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+            <property name="ignoreResourceNotFound" value="true" />
+            <property name="ignoreUnresolvablePlaceholders" value="false" />
+            <property name="order" value="1" />
+        </bean>
+
+
+        <bean id="dataSource"
+              class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+            <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+            <property name="url"
+                      value="jdbc:mysql://localhost:3306/springbatch" />
+            <property name="username" value="root" />
+            <property name="password" value="root" />
+        </bean>
+
+        <bean id="transactionManager"
+              class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+            <property name="dataSource" ref="dataSource" />
+        </bean>
+
+        <bean id="jobRepository"
+              class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean">
+            <property name="dataSource" ref="dataSource" />
+            <property name="transactionManager" ref="transactionManager" />
+        </bean>
+
+        <!-- processors -->
+
+        <bean id="billingProcessor"
+              class="org.springframework.batch.sample.BillingItemProcessor"></bean>
+        <!-- readers -->
+        <bean id="userDbReader"
+              class="org.springframework.batch.item.database.JdbcPagingItemReader">
+            <property name="dataSource" ref="dataSource" />
+            <property name="rowMapper" ref="userDbMapper" />
+            <property name="queryProvider" ref="userQueryProvider" />
+        </bean>
+        <bean id="userDbMapper"
+              class="org.springframework.batch.sample.UserDbMapper" />
+
+        <bean id="userQueryProvider"
+              class="org.springframework.batch.item.database.support.MySqlPagingQueryProvider">
+            <property name="selectClause" value="u.id,u.name,u.age,u.balance" />
+            <property name="fromClause" value="users u" />
+            <property name="sortKeys">
+                <map>
+                    <entry key="u.id" value="ASCENDING"/>
+                    <entry key="u.name" value="DESCENDING"/>
+                </map>
+            </property>
+        </bean>
+
+
+        <bean id="billDbWriter"
+              class="org.springframework.batch.item.database.JdbcBatchItemWriter">
+            <property name="dataSource" ref="dataSource" />
+            <property name="sql"
+                      value="insert into bills(id,user_id,fees,paid_fees,unpaid_fees,pay_status) values(:id,:user.id,:fees,:paidFees,:unpaidFees,:payStatus)" />
+            <property name="itemSqlParameterSourceProvider"
+                      ref="itemSqlParameterSourceProvider" />
+        </bean>
+
+
+        <bean id="itemSqlParameterSourceProvider"
+              class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider" />
+</beans>
