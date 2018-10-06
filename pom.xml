@@ -74,7 +74,8 @@
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc6</artifactId>
-			<version>11.2.0.1.0</version>
+			<!--<version>11.2.0.1.0</version>-->
+			<version>11.2.0</version>
 		</dependency>
 		<!--c3p0连接池-->
 		<dependency>
@@ -95,6 +96,12 @@
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
 			<version>1.4.10</version>
+		</dependency>
+		<!--使用MySQL作为数据库-->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 

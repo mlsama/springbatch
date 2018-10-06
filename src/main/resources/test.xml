@@ -1,3 +1,4 @@
+<!--
 <?xml version="1.0" encoding="UTF-8"?>
 <beans
             xmlns="http://www.springframework.org/schema/beans"
@@ -23,7 +24,7 @@
             </batch:step>
         </batch:job>
 
-        <!-- run every 10 seconds -->
+        &lt;!&ndash; run every 10 seconds &ndash;&gt;
         <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
             <property name="triggers">
                 <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
@@ -84,11 +85,11 @@
             <property name="transactionManager" ref="transactionManager" />
         </bean>
 
-        <!-- processors -->
+        &lt;!&ndash; processors &ndash;&gt;
 
         <bean id="billingProcessor"
               class="org.springframework.batch.sample.BillingItemProcessor"></bean>
-        <!-- readers -->
+        &lt;!&ndash; readers &ndash;&gt;
         <bean id="userDbReader"
               class="org.springframework.batch.item.database.JdbcPagingItemReader">
             <property name="dataSource" ref="dataSource" />
@@ -124,3 +125,4 @@
         <bean id="itemSqlParameterSourceProvider"
               class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider" />
 </beans>
+-->
