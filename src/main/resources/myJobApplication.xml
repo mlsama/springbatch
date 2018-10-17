@@ -39,15 +39,15 @@
     <!-- 选用内存级别的数据库，不在需要用oracle、mysql等数据库,采用h2数据库，
          不需要手动配置，只需要的pom.xml文件中引入h2即可 否则使用JobRepositoryFactoryBean设置数据源.
          使用机器内存管理springbatch信息，容易内存溢出。-->
-    <bean id="jobRepository" class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+   <!-- <bean id="jobRepository" class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
         <property name="transactionManager" ref="transactionManager"></property>
-    </bean>
+    </bean>-->
     <!-- 配置spring batch的jobRepository，负责与数据库打交道 -->
-    <!--<bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean">
+    <bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean">
         <property name="dataSource" ref="dataSource"></property>
         <property name="transactionManager" ref="transactionManager"></property>
         <property name="databaseType" value="MySQL"></property>
-    </bean>-->
+    </bean>
 
 
     <bean id="executor" class="org.springframework.core.task.SimpleAsyncTaskExecutor"></bean>
