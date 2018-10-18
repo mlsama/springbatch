@@ -1,9 +1,7 @@
 /**
  * Bestpay.com.cn Inc.
  * Copyright (c) 2011-2018 All Rights Reserved.
- *//*
-
-
+ */
 package com.mlsama.hellospringbatch.config.apart;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -15,13 +13,12 @@ import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
 
-*/
 /**
  * 数据源: c3p0
  *
  * @author molong
  * @version Id: DataSourceConfiguration.java, v 0.1 2018/10/03 9:44 Tisson Exp $$
- *//*
+ */
 
 
 @Configuration      //声明为配置类
@@ -38,4 +35,3 @@ public class DataSourceConfiguration {
 
     }
 }
-*/
