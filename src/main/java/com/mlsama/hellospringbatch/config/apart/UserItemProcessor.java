@@ -9,6 +9,7 @@ package com.mlsama.hellospringbatch.config.apart;
  * @version Id: UserItemProcessor.java, v 0.1 2018/9/29 17:00 Tisson Exp $$
  */
 import org.springframework.batch.item.ItemProcessor;
+
 public class UserItemProcessor implements ItemProcessor<User, User> {
 
     @Override

@@ -18,8 +18,9 @@ public class UserWriter implements ItemWriter<User> {
 
     @Override
     public void write(List<? extends User> items) throws Exception {
+        log.info("****************helloWorld************************");
         for(User user : items){
-            log.info("{}",user);
+            log.info("处理的对象是:{}",user);
         }
     }
 
